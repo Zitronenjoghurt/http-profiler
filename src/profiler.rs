@@ -9,7 +9,7 @@ pub async fn profile_http(client: &Client, version: Version, iterations: u64) ->
     for _ in 0..iterations {
         let duration = ping_api(client, version).await;
         total_duration += duration;
-        sleep(Duration::from_millis(500)).await;
+        sleep(Duration::from_millis(100)).await;
     }
 
     (total_duration as f32) / (iterations as f32)
@@ -17,12 +17,13 @@ pub async fn profile_http(client: &Client, version: Version, iterations: u64) ->
 
 pub async fn ping_api(client: &Client, version: Version) -> u64 {
     let before = timestamp_now_nanos();
-    client
-        .get("http://profiling.lemon.industries/")
+    let response = client
+        .get("https://profiling.lemon.industries/")
         .version(version)
         .send()
         .await
         .unwrap();
+    let _body = response.text().await.unwrap();
     let after = timestamp_now_nanos();
     after - before
 }
