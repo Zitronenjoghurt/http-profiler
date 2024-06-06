@@ -1,5 +1,6 @@
 use reqwest::{Client, Version};
 
+pub mod http3_client;
 pub mod profiler;
 pub mod utils;
 
