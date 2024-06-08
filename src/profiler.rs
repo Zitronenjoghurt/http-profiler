@@ -1,3 +1,4 @@
+use rand::Rng;
 use reqwest::{Client, Version};
 use std::time::Instant;
 use tokio::time::{sleep, Duration};
@@ -19,12 +20,10 @@ pub async fn profile_http(client: &Client, version: Version, iterations: u64) ->
 pub async fn ping_api(client: &Client, version: Version) -> u64 {
     let before = Instant::now();
 
-    let response = client
-        .get("https://profiling.lemon.industries/")
-        .version(version)
-        .send()
-        .await
-        .unwrap();
+    let cache_buster: u64 = rand::thread_rng().gen();
+    let url = format!("https://profiling.lemon.industries/?cb={}", cache_buster);
+
+    let response = client.get(url).version(version).send().await.unwrap();
 
     let _body = response.text().await.unwrap();
 
