@@ -13,7 +13,7 @@ async fn main() {
     let http_11 = profiler::profile_http(&client, Version::HTTP_11, ITERATIONS).await;
     let http_2 = profiler::profile_http(&client, Version::HTTP_2, ITERATIONS).await;
 
-    println!("HTTP/1.0: {}", http_10);
-    println!("HTTP/1.1: {}", http_11);
-    println!("HTTP/2:   {}", http_2);
+    println!("HTTP/1.0: {}ms", http_10);
+    println!("HTTP/1.1: {}ms", http_11);
+    println!("HTTP/2:   {}ms", http_2);
 }
