@@ -1,4 +1,5 @@
 use reqwest::{Client, Version};
+use std::time::Instant;
 use tokio::time::{sleep, Duration};
 
 use crate::{http3_client::Http3Client, utils::timestamp_now_millis};
@@ -16,18 +17,20 @@ pub async fn profile_http(client: &Client, version: Version, iterations: u64) ->
 }
 
 pub async fn ping_api(client: &Client, version: Version) -> u64 {
-    let before = timestamp_now_millis();
+    let before = Instant::now();
+
     let response = client
         .get("https://profiling.lemon.industries/")
         .version(version)
         .send()
         .await
         .unwrap();
+
     let _body = response.text().await.unwrap();
-    let after = timestamp_now_millis();
-    let latency = after - before;
-    println!("{} GET / took {}ms", version_to_string(version), latency);
-    latency
+
+    let duration = before.elapsed().as_millis() as u64;
+    println!("{} GET / took {}ms", version_to_string(version), duration);
+    duration
 }
 
 pub async fn profile_http3(iterations: u64) -> f32 {
